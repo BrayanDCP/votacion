@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Voto Perú 2026 — Sistema de votación en vivo para el TikTok Live. Elecciones Generales 12 de abril de 2026.">
+    <meta name="author" content="Voto Perú Live">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>🇵🇪 VOTO PERÚ 2026 — Elecciones en Vivo | 12 de Abril</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos principales -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ================================================
+     HEADER PRINCIPAL
+================================================ -->
+<header class="header">
+    <div class="header-inner">
+        <div class="header-logo">
+            <!-- Escudo simplificado SVG -->
+            <svg class="logo-escudo" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 4L52 16V34C52 45 42 54 30 58C18 54 8 45 8 34V16L30 4Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                <path d="M30 12L46 20V34C46 42 39 49 30 52C21 49 14 42 14 34V20L30 12Z" fill="rgba(255,255,255,0.08)"/>
+                <text x="30" y="36" text-anchor="middle" font-size="22" font-family="Georgia,serif" fill="white" font-weight="bold">🇵🇪</text>
+            </svg>
+            <div class="header-titulo">
+                <h1>VOTO PERÚ 2026</h1>
+                <p>Elecciones Generales — 12 de Abril</p>
+            </div>
+        </div>
+        <div class="header-live">
+            <div class="live-dot"></div>
+            EN VIVO
+        </div>
+    </div>
+</header>
+
+<!-- Franja bandera peruana -->
+<div class="franja-peru"></div>
+
+<!-- Aviso legal -->
+<div class="aviso-legal">
+    <span>© 2026 Voto Perú Live</span> — Todos los derechos reservados. Propiedad intelectual protegida. Prohibida su copia, reproducción o distribución sin autorización expresa. Sistema innovador de participación ciudadana.
+</div>
+
+<!-- ================================================
+     CONTENIDO PRINCIPAL
+================================================ -->
+<main class="main-container">
+
+    <!-- ========================
+         CARD: FORMULARIO VOTO
+    ======================== -->
+    <div class="card">
+        <div class="card-header">
+            <div class="icon-header">🗳️</div>
+            <h2>Emite tu Voto</h2>
+        </div>
+        <div class="card-body">
+
+            <!-- DNI -->
+            <div class="form-group">
+                <label class="form-label" for="input-dni">
+                    Número de DNI <span>*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="input-dni"
+                    class="form-input"
+                    placeholder="12345678"
+                    maxlength="8"
+                    inputmode="numeric"
+                    pattern="\d{8}"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <p class="form-hint">Solo números — 8 dígitos exactos. Un voto por DNI.</p>
+            </div>
+
+            <!-- Selector de partidos -->
+            <div class="form-group">
+                <label class="partidos-label">
+                    Selecciona tu Partido Político <span style="color:var(--rojo)">*</span>
+                </label>
+                <div id="partidos-container" class="partidos-grid">
+                    <!-- Renderizado por JS -->
+                </div>
+            </div>
+
+            <!-- Botón votar -->
+            <button 
+                id="btn-votar" 
+                class="btn-votar" 
+                onclick="enviarVoto()" 
+                disabled>
+                🗳️ Emitir mi Voto
+            </button>
+
+            <!-- Mensaje de respuesta -->
+            <div id="mensaje-respuesta"></div>
+
+            <!-- Nota de privacidad -->
+            <p style="margin-top: 16px; font-size: 0.74rem; color: var(--gris-texto); text-align: center; border-top: 1px solid var(--gris-medio); padding-top: 14px;">
+                🔒 Tu DNI solo se usa para verificar un voto por persona. No se almacena información personal adicional.
+            </p>
+        </div>
+    </div>
+
+    <!-- ========================
+         CARD: RESULTADOS EN VIVO
+    ======================== -->
+    <div class="card">
+        <div class="card-header" style="justify-content: space-between;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="icon-header">📊</div>
+                <h2>Resultados en Vivo</h2>
+            </div>
+            <div class="actualiza-badge">
+                <div class="actualiza-dot"></div>
+                Actualizando
+            </div>
+        </div>
+        <div class="card-body">
+
+            <!-- Estadísticas rápidas -->
+            <div class="stats-strip">
+                <div class="stat-box">
+                    <div class="stat-numero" id="total-votos">0</div>
+                    <div class="stat-label">Votos Totales</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-numero" id="total-participantes">0</div>
+                    <div class="stat-label">Participantes</div>
+                </div>
+            </div>
+
+            <!-- Última actualización -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px;">
+                <span style="font-size:0.77rem; color:var(--gris-texto); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Ranking de votos</span>
+                <span style="font-size:0.73rem; color:var(--gris-texto);">
+                    Actualizado: <strong id="ultima-actualizacion" style="color:var(--verde-ok);">—</strong>
+                </span>
+            </div>
+
+            <!-- Lista de resultados -->
+            <div id="resultados-lista" class="resultados-lista">
+                <div class="sin-votos">🗳️ Aún no hay votos registrados.<br>¡Sé el primero en participar!</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Disclaimer democrático -->
+    <div class="disclaimer-demo">
+        <strong>⚠️ AVISO IMPORTANTE:</strong> Esta plataforma es una herramienta de participación ciudadana digital no oficial, con fines informativos y de entretenimiento para transmisiones en vivo. No está afiliada ni representa a la ONPE, JNE u organismo electoral oficial del Perú. Para ejercer su voto oficial, acuda a su local de votación el <strong>domingo 12 de abril de 2026</strong> con su DNI vigente.
+    </div>
+
+</main>
+
+<!-- ================================================
+     FOOTER
+================================================ -->
+<footer class="footer">
+    <span class="copyright">© 2026 Voto Perú Live — Todos los derechos reservados</span>
+    Plataforma innovadora de participación ciudadana digital en vivo.<br>
+    <strong>Propiedad intelectual protegida.</strong> Prohibida su reproducción, copia, modificación o distribución sin autorización expresa del titular.<br>
+    <strong>Datos electorales:</strong> Información basada en fuentes públicas oficiales (ONPE / JNE). No representa resultados oficiales.
+</footer>
+
+<!-- Script principal -->
+<script src="index.js"></script>
+
+</body>
+</html>
