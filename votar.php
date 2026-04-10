@@ -1,130 +1,123 @@
 <?php
 /**
- * VOTO PERÚ 2026 - Sistema de Votación en Vivo
- * Backend PHP - votar.php
- * 
+ * VOTO PERÚ 2026 — Backend PHP
  * © 2026 Voto Perú Live. Todos los derechos reservados.
- * Prohibida su reproducción, copia o distribución sin autorización expresa.
- * Sistema desarrollado como plataforma innovadora de participación ciudadana.
  */
 
-header('Content-Type: application/json');
+// Cabeceras obligatorias CORS y JSON
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Accept');
+header('Cache-Control: no-store, no-cache, must-revalidate');
 
-// Manejar solicitudes OPTIONS (preflight)
+// Responder al preflight OPTIONS inmediatamente
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
+    echo json_encode(['ok' => true]);
     exit;
 }
 
-// Archivo donde se almacenan los votos
-define('VOTOS_FILE', __DIR__ . '/votos.json');
+// Archivo de base de datos JSON
+define('DB_FILE', __DIR__ . '/votos.json');
 
-/**
- * Leer datos del archivo JSON
- */
+// ── Leer datos ─────────────────────────────────────────────
 function leerDatos() {
-    if (!file_exists(VOTOS_FILE)) {
-        $datos = ['votos' => [], 'dnisRegistrados' => []];
-        guardarDatos($datos);
-        return $datos;
+    if (!file_exists(DB_FILE)) {
+        return iniciarDB();
     }
-    $contenido = file_get_contents(VOTOS_FILE);
-    return json_decode($contenido, true) ?? ['votos' => [], 'dnisRegistrados' => []];
+    $raw = file_get_contents(DB_FILE);
+    if ($raw === false) return iniciarDB();
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : iniciarDB();
 }
 
-/**
- * Guardar datos en el archivo JSON
- */
-function guardarDatos($datos) {
-    file_put_contents(VOTOS_FILE, json_encode($datos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+function iniciarDB() {
+    $data = ['votos' => (object)[], 'dnis' => []];
+    guardarDatos($data);
+    return $data;
 }
 
-/**
- * Validar formato de DNI peruano (8 dígitos)
- */
-function validarDNI($dni) {
-    return preg_match('/^\d{8}$/', $dni);
+// ── Guardar datos ───────────────────────────────────────────
+function guardarDatos($data) {
+    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    return file_put_contents(DB_FILE, $json, LOCK_EX) !== false;
 }
 
-/**
- * Obtener resultados actuales
- */
-function obtenerResultados() {
-    $datos = leerDatos();
-    $totalVotos = array_sum($datos['votos']);
-    $totalDNIs = count($datos['dnisRegistrados']);
-    
-    arsort($datos['votos']); // Ordenar de mayor a menor
-    
-    return [
-        'success' => true,
-        'votos' => $datos['votos'],
-        'totalVotos' => $totalVotos,
-        'totalParticipantes' => $totalDNIs
-    ];
+// ── Validar DNI ─────────────────────────────────────────────
+function esDNIValido($dni) {
+    return is_string($dni) && preg_match('/^\d{8}$/', trim($dni));
 }
 
-/**
- * Registrar un voto
- */
-function registrarVoto($dni, $partido) {
-    if (!validarDNI($dni)) {
-        return ['success' => false, 'mensaje' => 'DNI inválido. Debe tener exactamente 8 dígitos.'];
+// ── Acción: VOTAR ───────────────────────────────────────────
+function accionVotar() {
+    // Leer body JSON o POST clásico
+    $raw  = file_get_contents('php://input');
+    $body = json_decode($raw, true);
+
+    $dni     = trim($body['dni']     ?? $_POST['dni']     ?? '');
+    $partido = trim($body['partido'] ?? $_POST['partido'] ?? '');
+
+    if (!esDNIValido($dni)) {
+        salir(false, 'DNI inválido. Debe tener exactamente 8 dígitos numéricos.');
     }
-    
     if (empty($partido)) {
-        return ['success' => false, 'mensaje' => 'Debes seleccionar un partido político.'];
+        salir(false, 'Debes seleccionar un partido político.');
     }
-    
-    $datos = leerDatos();
-    
-    // Verificar si el DNI ya votó
-    if (in_array($dni, $datos['dnisRegistrados'])) {
-        return ['success' => false, 'mensaje' => 'Este DNI ya emitió su voto. Solo se permite un voto por persona.'];
+
+    $data = leerDatos();
+
+    // ¿Ya votó?
+    if (in_array($dni, (array)$data['dnis'], true)) {
+        salir(false, 'Este DNI ya registró su voto. Solo se permite un voto por persona.');
     }
-    
-    // Registrar voto
-    $datos['dnisRegistrados'][] = $dni;
-    
-    if (!isset($datos['votos'][$partido])) {
-        $datos['votos'][$partido] = 0;
+
+    // Registrar
+    $data['dnis'][] = $dni;
+    $votos = (array)$data['votos'];
+    $votos[$partido] = ($votos[$partido] ?? 0) + 1;
+    $data['votos'] = $votos;
+
+    if (!guardarDatos($data)) {
+        salir(false, 'Error al guardar el voto. Contacta al administrador.');
     }
-    $datos['votos'][$partido]++;
-    
-    guardarDatos($datos);
-    
-    return [
-        'success' => true,
-        'mensaje' => '¡Voto registrado exitosamente! Gracias por participar.',
-        'partido' => $partido,
-        'totalVotos' => array_sum($datos['votos'])
-    ];
+
+    salir(true, '¡Voto registrado! Gracias por participar.', [
+        'totalVotos' => array_sum($votos)
+    ]);
 }
 
-// ==========================================
-// ROUTER DE ACCIONES
-// ==========================================
+// ── Acción: RESULTADOS ──────────────────────────────────────
+function accionResultados() {
+    $data  = leerDatos();
+    $votos = (array)$data['votos'];
+    $dnis  = (array)$data['dnis'];
 
+    arsort($votos);
+
+    echo json_encode([
+        'success'           => true,
+        'votos'             => $votos,
+        'totalVotos'        => array_sum($votos),
+        'totalParticipantes'=> count($dnis),
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ── Respuesta rápida ────────────────────────────────────────
+function salir($ok, $msg, $extra = []) {
+    echo json_encode(array_merge(
+        ['success' => $ok, 'mensaje' => $msg],
+        $extra
+    ), JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ── Router ──────────────────────────────────────────────────
 $action = $_GET['action'] ?? $_POST['action'] ?? 'resultados';
 
-switch ($action) {
-    case 'votar':
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['success' => false, 'mensaje' => 'Método no permitido.']);
-            break;
-        }
-        $input = json_decode(file_get_contents('php://input'), true);
-        $dni = trim($input['dni'] ?? $_POST['dni'] ?? '');
-        $partido = trim($input['partido'] ?? $_POST['partido'] ?? '');
-        echo json_encode(registrarVoto($dni, $partido));
-        break;
-        
-    case 'resultados':
-    default:
-        echo json_encode(obtenerResultados());
-        break;
+if ($action === 'votar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    accionVotar();
+} else {
+    accionResultados();
 }
-?>
