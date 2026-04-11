@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Voto Perú 2026 — Votación en vivo para TikTok Live. Elecciones Generales 12 de abril 2026.">
+<meta name="description" content="Voto Perú 2026 — Sistema de votación en vivo. Elecciones Generales 12 de abril 2026.">
+<meta name="author" content="Brayan Delfor Choque Peregrino">
 <meta name="robots" content="noindex,nofollow">
 <title>🇵🇪 VOTO PERÚ 2026 — Elecciones en Vivo | 12 de Abril</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,23 +14,22 @@
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
 <header class="header">
-  <div class="header-inner">
-    <div class="header-logo">
-      <svg class="logo-svg" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-        <path d="M30 4L52 16V34C52 45 42 54 30 58C18 54 8 45 8 34V16Z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
-        <path d="M30 12L46 20V34C46 42 39 49 30 52C21 49 14 42 14 34V20Z" fill="rgba(255,255,255,.07)"/>
-        <text x="30" y="37" text-anchor="middle" font-size="20" fill="white">🇵🇪</text>
+  <div class="h-inner">
+    <div class="h-logo">
+      <svg class="h-escudo" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 4L52 16V34C52 45 42 54 30 58C18 54 8 45 8 34V16Z" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <path d="M30 12L46 20V34C46 42 39 49 30 52C21 49 14 42 14 34V20Z" fill="rgba(255,255,255,.06)"/>
+        <text x="30" y="37" text-anchor="middle" font-size="19" fill="white">🇵🇪</text>
       </svg>
-      <div class="header-titulo">
+      <div class="h-txt">
         <h1>VOTO PERÚ 2026</h1>
         <p>Elecciones Generales — 12 de Abril</p>
       </div>
     </div>
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      EN VIVO
+    <div class="live-pill">
+      <div class="live-dot"></div>EN VIVO
     </div>
   </div>
 </header>
@@ -37,125 +37,296 @@
 <!-- Franja bandera -->
 <div class="franja"></div>
 
-<!-- Aviso de derechos -->
-<div class="aviso-legal">
-  <span>© 2026 Voto Perú Live</span> — Todos los derechos reservados. Propiedad intelectual protegida. Prohibida su copia o reproducción sin autorización. Sistema innovador de participación ciudadana.
+<!-- Ticker mensajes alentadores -->
+<div class="ticker-wrap">
+  <span class="ticker"></span>
 </div>
 
-<!-- MAIN -->
+<!-- ══ MAIN ════════════════════════════════════════════════ -->
 <main class="main">
 
-  <!-- ── COLUMNA IZQUIERDA: VOTAR ── -->
+  <!-- ── COLUMNA: VOTAR ─────────────────────────────────── -->
   <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🗳️</div>
-      <h2>Emite tu Voto</h2>
-    </div>
-    <div class="card-body">
-
-      <!-- Aviso modo demo (solo visible si PHP no responde) -->
-      <div class="modo-demo" id="modo-demo">
-        ℹ️ <strong>Modo demostración:</strong> PHP no detectado. Los votos se guardan temporalmente en el navegador. Sube los archivos a un hosting con PHP para modo producción.
+    <div class="card-hd">
+      <div class="card-hd-left">
+        <div class="card-icon">🗳️</div>
+        <h2>Emite tu Voto</h2>
       </div>
+    </div>
+    <div class="card-bd">
 
       <!-- DNI -->
-      <div class="form-group">
-        <label class="form-label" for="input-dni">
-          Número de DNI <em>*</em>
-        </label>
-        <input
-          type="text"
-          id="input-dni"
-          class="form-input"
-          placeholder="12345678"
-          maxlength="8"
-          inputmode="numeric"
-          pattern="\d{8}"
-          autocomplete="off"
-          spellcheck="false">
-        <p class="form-hint">🔒 Solo 8 dígitos numéricos. Un voto por DNI. Tu privacidad está protegida.</p>
+      <div class="fg">
+        <label class="flbl" for="idni">Número de DNI <em>*</em></label>
+        <input type="text" id="idni" class="finp"
+          placeholder="12345678" maxlength="8"
+          inputmode="numeric" pattern="\d{8}"
+          autocomplete="off" spellcheck="false">
+        <p class="fhint">🔒 8 dígitos numéricos. Un voto por DNI. Válido desde cualquier dispositivo o país.</p>
       </div>
 
-      <!-- Selector de partidos -->
-      <div class="form-group">
-        <div class="partidos-titulo">
-          Elige tu Partido Político <em>*</em>
+      <!-- Selector partidos -->
+      <div class="fg">
+        <div class="ptit">Elige tu Partido Político <em>*</em>
+          <span style="font-size:.65rem;color:#9AA3B2;font-weight:400;margin-left:6px">(presiona ℹ️ para ver propuestas)</span>
         </div>
-        <div id="partidos-container" class="partidos-grid">
-          <!-- JS renderiza aquí -->
+        <div id="pgrid" class="pgrid">
+          <!-- renderizado por JS -->
         </div>
       </div>
 
       <!-- Botón -->
-      <button id="btn-votar" class="btn-votar" onclick="enviarVoto()" disabled>
+      <button id="btnvotar" class="btn-votar" onclick="enviarVoto()" disabled>
         🗳️ Emitir mi Voto
       </button>
 
-      <!-- Mensaje -->
-      <div id="mensaje-respuesta"></div>
+      <!-- Mensaje respuesta -->
+      <div id="msg"></div>
 
-      <p style="margin-top:15px;font-size:.72rem;color:var(--gris-t);text-align:center;border-top:1px solid var(--gris-m);padding-top:13px">
-        Los resultados se actualizan en tiempo real cada 4 segundos. Información solo con fines de entretenimiento.
+      <p style="margin-top:14px;font-size:.68rem;color:#9AA3B2;text-align:center;border-top:1px solid #E3E7EF;padding-top:12px">
+        Los votos se registran en servidor compartido. Válido desde cualquier dispositivo o ubicación.
       </p>
     </div>
   </div>
 
-  <!-- ── COLUMNA DERECHA: RESULTADOS ── -->
+  <!-- ── COLUMNA: RESULTADOS ───────────────────────────── -->
   <div class="card">
-    <div class="card-head" style="justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:12px">
+    <div class="card-hd">
+      <div class="card-hd-left">
         <div class="card-icon">📊</div>
         <h2>Resultados en Vivo</h2>
       </div>
-      <div class="actualiza-badge">
-        <div class="act-dot"></div>
-        Actualizando
-      </div>
+      <div class="abadge"><div class="adot"></div>Actualizando</div>
     </div>
-    <div class="card-body">
+    <div class="card-bd">
 
       <!-- Stats -->
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-num" id="total-votos">0</div>
-          <div class="stat-lbl">Votos Totales</div>
+      <div class="stats">
+        <div class="sbox">
+          <div class="snum" id="ntotal">0</div>
+          <div class="slbl">Votos Totales</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num" id="total-participantes">0</div>
-          <div class="stat-lbl">Participantes</div>
+        <div class="sbox">
+          <div class="snum" id="npartic">0</div>
+          <div class="slbl">Participantes</div>
         </div>
       </div>
 
-      <!-- Cabecera lista -->
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
-        <span style="font-size:.75rem;color:var(--gris-t);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Ranking</span>
-        <span style="font-size:.7rem;color:var(--gris-t)">
-          Última actualización: <strong id="ultima-actualizacion" style="color:var(--verde)">—</strong>
+      <!-- Cabecera -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-size:.72rem;color:#9AA3B2;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Ranking</span>
+        <span style="font-size:.67rem;color:#9AA3B2">
+          Actualizado: <strong id="nhora" style="color:#059669">—</strong>
         </span>
       </div>
 
-      <!-- Lista resultados -->
-      <div id="resultados-lista" class="resultados-lista">
-        <div class="sin-votos">🗳️ Aún no hay votos.<br>¡Sé el primero en participar!</div>
+      <!-- Lista -->
+      <div id="rlst" class="rlst">
+        <div class="sv">🗳️ Aún no hay votos.<br>¡Sé el primero en participar!</div>
       </div>
+
+      <!-- Botón estadísticas -->
+      <button class="btn-est" onclick="abrirEstadisticas()">
+        📊 Ver Estadísticas Completas
+      </button>
 
     </div>
   </div>
 
-  <!-- Disclaimer -->
-  <div class="disclaimer">
-    <strong>⚠️ AVISO IMPORTANTE:</strong> Esta plataforma es una herramienta de participación ciudadana digital no oficial, con fines informativos y de entretenimiento para transmisiones en vivo. <strong>No está afiliada ni representa a la ONPE, JNE ni a ningún organismo electoral oficial del Perú.</strong> Para ejercer su voto oficial, acuda a su local de votación el domingo <strong>12 de abril de 2026</strong> con su DNI vigente.
+  <!-- Disclaimer con botones legales -->
+  <div class="disc">
+    <span>
+      <strong>⚠️ AVISO:</strong> Plataforma de participación ciudadana digital no oficial con fines de entretenimiento.
+      No afiliada a ONPE ni JNE. Para votar oficialmente acude a tu local electoral el <strong>12 de abril de 2026</strong>.
+      © 2026 <strong>Brayan Delfor Choque Peregrino</strong>
+    </span>
+    <div class="disc-btns">
+      <button class="disc-btn" onclick="abrirTerminos()">📋 Términos y Condiciones</button>
+      <button class="disc-btn" onclick="abrirPrivacidad()">🔒 Privacidad</button>
+    </div>
   </div>
 
 </main>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <span class="copy">© 2026 Voto Perú Live — Todos los derechos reservados</span>
+<!-- Footer -->
+<footer>
+  <span class="copy">© 2026 Brayan Delfor Choque Peregrino — Todos los derechos reservados</span>
   Plataforma innovadora de participación ciudadana digital para transmisiones en vivo.<br>
-  <strong>Propiedad intelectual protegida.</strong> Prohibida su reproducción, copia, modificación o distribución sin autorización expresa del titular.<br>
-  Datos basados en fuentes públicas oficiales (ONPE / JNE). No representa resultados electorales oficiales.
+  <strong>Propiedad intelectual protegida.</strong> Prohibida su reproducción, copia o distribución sin autorización expresa del titular.<br>
+  Datos basados en fuentes públicas oficiales (ONPE / JNE). No representa resultados electorales oficiales del Estado peruano.
 </footer>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL NETFLIX — INFO PARTIDO
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-nf">
+  <div class="modal-box" style="max-width:680px">
+
+    <!-- Header oscuro estilo Netflix -->
+    <div class="nf-header">
+      <button class="modal-close" onclick="cerrarModal('modal-nf')">✕</button>
+      <div class="nf-title" id="nf-title">Partido</div>
+      <div class="nf-sub" id="nf-sub"></div>
+    </div>
+
+    <!-- Video YouTube -->
+    <div class="nf-video" id="nf-video-wrap">
+      <iframe id="nf-iframe" src="" title="Video del partido" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <!-- Cuerpo oscuro -->
+    <div class="nf-body">
+
+      <!-- Símbolo + nombre candidato -->
+      <div class="nf-symbol-row">
+        <div class="nf-symbol">
+          <img id="nf-sym-img" src="" alt="Símbolo">
+          <span class="sfb" id="nf-sym-fb" style="display:none"></span>
+        </div>
+        <div class="nf-cand-info">
+          <h3 id="nf-cand-h"></h3>
+          <p id="nf-cand-s"></p>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <div class="nf-section">
+        <div class="nf-section-title">Sobre el partido</div>
+        <p id="nf-desc"></p>
+      </div>
+
+      <!-- Misión -->
+      <div class="nf-section">
+        <div class="nf-section-title">Misión</div>
+        <p id="nf-mision"></p>
+      </div>
+
+      <!-- Visión -->
+      <div class="nf-section">
+        <div class="nf-section-title">Visión</div>
+        <p id="nf-vision"></p>
+      </div>
+
+      <!-- Propuestas -->
+      <div class="nf-section">
+        <div class="nf-section-title">5 Propuestas Clave</div>
+        <ul class="nf-props" id="nf-props"></ul>
+      </div>
+
+      <!-- Botón seleccionar desde modal -->
+      <button class="nf-btn-votar" id="nf-btn-votar">
+        ✅ Seleccionar este partido y votar
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL ESTADÍSTICAS
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-est">
+  <div class="est-box">
+    <div class="est-hd">
+      <button class="modal-close" onclick="cerrarModal('modal-est')">✕</button>
+      <h2>📊 Estadísticas Completas</h2>
+      <p>Distribución de votos por partido político</p>
+    </div>
+    <div class="est-body" id="est-body">
+      <p style="text-align:center;padding:20px;color:#9AA3B2">Cargando...</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL TÉRMINOS Y CONDICIONES
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-terms">
+  <div class="legal-box">
+    <div class="legal-hd">
+      <h2>📋 Términos y Condiciones de Uso</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-terms')">✕</button>
+    </div>
+    <div class="legal-bd">
+      <p><strong>Última actualización: Abril 2026</strong></p>
+      <p>Bienvenido a <strong>Voto Perú 2026</strong>, una plataforma de participación ciudadana digital creada, diseñada y administrada por <strong>Brayan Delfor Choque Peregrino</strong>. Al ingresar y utilizar esta plataforma, aceptas íntegramente los siguientes términos:</p>
+
+      <h3>1. Titularidad y Propiedad Intelectual</h3>
+      <p>Esta plataforma, incluyendo su código, diseño, estructura, contenidos y funcionalidades, es <strong>propiedad intelectual exclusiva de Brayan Delfor Choque Peregrino</strong>. Está protegida por las leyes de propiedad intelectual del Perú y normas internacionales aplicables. Queda <strong>estrictamente prohibido</strong> copiar, reproducir, distribuir, modificar, vender o utilizar cualquier parte de esta plataforma sin autorización expresa y por escrito del titular.</p>
+
+      <h3>2. Naturaleza de la Plataforma</h3>
+      <p>Voto Perú 2026 es una plataforma de <strong>participación ciudadana digital no oficial</strong>, con fines exclusivamente informativos y de entretenimiento para transmisiones en vivo. <strong>No está afiliada, representada ni respaldada por la ONPE, el JNE ni ningún organismo electoral oficial del Estado peruano.</strong> Los resultados generados no representan ni reemplazan los resultados electorales oficiales.</p>
+
+      <h3>3. Sin Fines de Lucro</h3>
+      <p>Esta plataforma opera <strong>sin ningún fin de lucro</strong>. No se cobra a los usuarios por su participación. Está dirigida al público en general como ejercicio de participación ciudadana digital y entretenimiento en transmisiones en vivo.</p>
+
+      <h3>4. Uso del DNI</h3>
+      <p>El número de DNI ingresado por el usuario se utiliza únicamente para verificar que cada persona emita un solo voto. No se almacena información personal adicional ni se utiliza el DNI para ningún otro fin. El sistema no guarda nombres, ni información de contacto, ni datos sensibles.</p>
+
+      <h3>5. Un Voto por Persona</h3>
+      <p>Cada número de DNI puede utilizarse para emitir un único voto. Intentos de fraude o manipulación de la plataforma podrán ser reportados y documentados.</p>
+
+      <h3>6. Prohibición de Plagio y Piratería</h3>
+      <p>Queda <strong>terminantemente prohibido</strong> copiar, plagiar, piratar o apropiarse de esta plataforma o cualquiera de sus elementos. El incumplimiento de esta disposición podrá dar lugar a acciones legales por parte del titular conforme a la legislación vigente en materia de propiedad intelectual en el Perú.</p>
+
+      <h3>7. Modificaciones</h3>
+      <p>El titular se reserva el derecho de modificar estos términos en cualquier momento. El uso continuado de la plataforma implica la aceptación de las versiones actualizadas.</p>
+
+      <h3>8. Contacto</h3>
+      <p>Para consultas, autorizaciones o reportes relacionados con esta plataforma, contactar directamente al titular: <strong>Brayan Delfor Choque Peregrino</strong>.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL PRIVACIDAD
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-priv">
+  <div class="legal-box">
+    <div class="legal-hd">
+      <h2>🔒 Política de Privacidad</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-priv')">✕</button>
+    </div>
+    <div class="legal-bd">
+      <p><strong>Última actualización: Abril 2026</strong></p>
+      <p>En <strong>Voto Perú 2026</strong>, la privacidad de los usuarios es una prioridad. Esta política describe cómo tratamos los datos que los usuarios proporcionan al utilizar la plataforma.</p>
+
+      <h3>1. Datos que Recopilamos</h3>
+      <p>La única información recopilada es el <strong>número de DNI</strong> ingresado por el usuario para emitir su voto. No se recopila nombre, dirección, correo electrónico, número de teléfono, ubicación ni ningún otro dato personal.</p>
+
+      <h3>2. Finalidad del Tratamiento</h3>
+      <p>El número de DNI se utiliza exclusivamente para <strong>garantizar que cada persona vote una sola vez</strong>. No se utiliza para identificar a la persona, contactarla, perfilarla ni para ningún otro fin comercial, político o de terceros.</p>
+
+      <h3>3. Almacenamiento</h3>
+      <p>Los datos se almacenan en un archivo en el servidor de la plataforma. El DNI se guarda de forma cifrada lógicamente y no es accesible al público. Los votos son registros numéricos anónimos por partido.</p>
+
+      <h3>4. Compartición de Datos</h3>
+      <p>Los datos recopilados <strong>no se comparten con terceros</strong>, organizaciones políticas, organismos gubernamentales ni empresas de publicidad. La información permanece en el servidor de la plataforma.</p>
+
+      <h3>5. Seguridad</h3>
+      <p>Se aplican medidas técnicas para proteger los datos almacenados contra accesos no autorizados, incluyendo bloqueo de escritura concurrente y acceso restringido al servidor.</p>
+
+      <h3>6. Derechos del Usuario</h3>
+      <p>Los usuarios tienen derecho a conocer qué datos se almacenan sobre ellos. Para ejercer este derecho, contactar al titular de la plataforma: <strong>Brayan Delfor Choque Peregrino</strong>.</p>
+
+      <h3>7. Cookies</h3>
+      <p>Esta plataforma <strong>no utiliza cookies</strong> de rastreo ni tecnologías de seguimiento de comportamiento del usuario.</p>
+
+      <h3>8. Marco Legal</h3>
+      <p>Esta política se rige por la <strong>Ley N° 29733 de Protección de Datos Personales del Perú</strong> y su reglamento. Al usar la plataforma, el usuario acepta esta política de privacidad.</p>
+    </div>
+  </div>
+</div>
+
 
 <script src="index.js"></script>
 </body>
